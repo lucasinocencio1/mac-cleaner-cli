@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=40.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mac-cleaner-cli"
+version = "1.0"
+description = "An open-source CLI to inspect and clean macOS System Data"
+authors = [
+  { name = "Lucas Inocencio" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["rich>=13.0.0"]
+
+[project.scripts]
+mac-sysclean = "mac_cleaner_cli.cli:main"

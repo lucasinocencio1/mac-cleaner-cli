@@ -1,0 +1,36 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+.Python
+
+# Build / install
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# macOS
+.DS_Store
+
+# Local config (optional; uncomment if you don’t want to commit)
+# .maccleanerrc
