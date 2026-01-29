@@ -23,11 +23,6 @@ DEFAULTS: dict[str, Any] = {
 VALID_KEYS = frozenset(DEFAULTS.keys())
 
 
-def _resolve(path: str) -> str:
-    p = path.replace("~", HOME) if "~" in path else path
-    return os.path.abspath(p)
-
-
 def config_path() -> str:
     """Preferred config file path (create dirs if needed)."""
     return CONFIG_PATHS[0]

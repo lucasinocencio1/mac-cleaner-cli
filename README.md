@@ -45,8 +45,8 @@ Contributing
 Feel free to open issues or pull requests to add new targets or suggest improvements.
 
 ```
-1- Fork the repository
-2- Create your feature branch (git checkout -b feature/yor-feature)
-3- Follow de PR template
-4- Open a Pull Request
+1. Fork the repository
+2. Create your feature branch (git checkout -b feature/your-feature)
+3. Follow the PR template
+4. Open a Pull Request
 ```

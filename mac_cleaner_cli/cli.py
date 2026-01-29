@@ -278,7 +278,9 @@ def _docker_reclaimable_bytes() -> int:
     try:
         out = subprocess.check_output(
             [docker, "system", "df", "--format", "{{.Type}}\t{{.Size}}\t{{.Reclaimable}}"],
-            text=True, timeout=30
+            text=True,
+            timeout=30,
+            stderr=subprocess.DEVNULL,
         )
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
         return 0
@@ -720,7 +722,7 @@ def main(argv=None):
             console.print("[dim]Rerun with --force if you really intend to delete them.[/]")
             sys.exit(1)
 
-        if not confirm("\nProceed with cleanup? (Y/N)"):
+        if not confirm("\nProceed with cleanup? [y/N]"):
             console.print("[yellow]Cancelled.[/]")
             sys.exit(0)
         perform_cleanup(selected, dry_run=args.dry_run)
