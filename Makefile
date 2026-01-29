@@ -12,7 +12,7 @@ help:
 	@echo "  make install             Install package (pip install -e .)"
 	@echo "  make test                Run tests (unittest)"
 	@echo "  make scan                Run scan (approximate sizes)"
-	@echo "  make interactive         Interactive mode (scan + choose what to clean)"
+	@echo "  make interactive         Interactive mode (scan + TUI to choose what to clean)"
 	@echo "  make categories          List all categories (targets)"
 	@echo "  make maintenance-dns     Flush DNS cache (may require sudo)"
 	@echo "  make maintenance-purge   Free purgeable space (may require sudo)"

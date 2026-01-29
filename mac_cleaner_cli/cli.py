@@ -529,8 +529,38 @@ def print_scan(include_risky: bool = True):
             console.print(f"\n  [dim yellow]Risky (use --risky to include): {', '.join(hidden)}[/]")
     console.print()
 
+def _prompt_choices_tui(keys: list):
+    """Interactive checkbox TUI (space to toggle, enter to confirm). Returns selected keys or None to fallback."""
+    try:
+        import questionary
+        from questionary import Choice
+    except ImportError:
+        return None
+    choices = [Choice(f"{TARGETS[k]['desc']} — {size_of_target(k)}", value=k) for k in keys]
+    choices.append(Choice("✓ Select all", value="__all__"))
+    msg = "Select categories to clean: SPACE to toggle, ENTER to confirm. Select at least one."
+    while True:
+        try:
+            result = questionary.checkbox(msg, choices=choices).ask()
+        except Exception:
+            return None
+        if result is None:
+            return []  # Ctrl+C
+        if not result:
+            console.print("[yellow]No category selected. Use SPACE to mark categories, then ENTER. Ctrl+C to exit.[/]\n")
+            msg = "Select at least one (SPACE to toggle, ENTER to confirm):"
+            continue
+        if "__all__" in result:
+            return keys
+        return [v for v in result if v != "__all__"]
+
+
 def prompt_choices(include_risky: bool = True):
     keys, _ = _visible_targets(include_risky)
+    if sys.stdin.isatty():
+        selected = _prompt_choices_tui(keys)
+        if selected is not None:
+            return selected
     console.print()
     console.print("[cyan]Select what to clean (comma-separated numbers). Nothing is deleted without confirmation.[/]\n")
     for i, key in enumerate(keys, 1):
@@ -690,7 +720,7 @@ def main(argv=None):
             console.print("[dim]Rerun with --force if you really intend to delete them.[/]")
             sys.exit(1)
 
-        if not confirm("\nProceed with cleanup?"):
+        if not confirm("\nProceed with cleanup? (Y/N)"):
             console.print("[yellow]Cancelled.[/]")
             sys.exit(0)
         perform_cleanup(selected, dry_run=args.dry_run)

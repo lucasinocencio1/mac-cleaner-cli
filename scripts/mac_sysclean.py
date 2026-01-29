@@ -305,7 +305,7 @@ def main():
             print("Rerun with --force if you really intend to delete them.")
             sys.exit(1)
 
-        if not confirm("\nProceed with cleanup?"):
+        if not confirm("\nProceed with cleanup? (Y/N)"):
             print("Cancelled.")
             sys.exit(0)
         perform_cleanup(selected, dry_run=args.dry_run)

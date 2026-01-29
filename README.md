@@ -12,7 +12,7 @@ make install           # pip install -e .
 make test              # Run tests (unittest)
 make scan              # --scan
 make scan RISKY=1      # --scan --risky
-make interactive       # Interactive mode
+make interactive       # Interactive mode (TUI: choose what to clean)
 make categories        # List categories
 make maintenance-dns   # maintenance --dns
 make maintenance-purge # maintenance --purgeable
@@ -21,6 +21,7 @@ make config-show       # config --show
 make clean-dry         # Dry-run user_caches + trash
 make clean-dry TARGETS='user_caches browser_cache'   # Dry-run with specific targets
 ```
+
 
 Safety and notes
 
@@ -31,14 +32,19 @@ Safety and notes
 
 - Dangerous targets: `docker_data`, `system_caches`, and `private_tmp` can remove large amounts of data and require `--force` to actually delete. The tool will refuse to run deletions of these targets unless `--force` is passed.
 
-- **`--risky`:** Include risky targets (e.g. `ios_backups`, `docker_data`, `system_caches`, `private_tmp`) in scan/interactive/clean. Without `--risky`, they are hidden.
+- `--risky`: Include risky targets (e.g. `ios_backups`, `docker_data`, `system_caches`, `private_tmp`) in scan/interactive/clean. Without `--risky`, they are hidden.
 
-- **Config:** `mac-sysclean config --init` creates `~/.maccleanerrc`; `config --show` prints current config. Options include `exclude_targets`, `downloads_days_old`, `large_files_mb`, `backup_retention_days`.
+- Config:`mac-sysclean config --init` creates `~/.maccleanerrc`; `config --show` prints current config. Options include `exclude_targets`, `downloads_days_old`, `large_files_mb`, `backup_retention_days`.
 
-- **Targets:** `browser_cache`, `homebrew`, `docker_prune` (Docker reclaimable, no volumes), `downloads` (old files in `~/Downloads`, configurable via `downloads_days_old`), `mail_attachments` (Mail.app Mail Downloads), `node_modules` (orphan/old in Projects, Developer, etc.). Use `categories` to list all.
+- Targets:`browser_cache`, `homebrew`, `docker_prune` (Docker reclaimable, no volumes), `downloads` (old files in `~/Downloads`, configurable via `downloads_days_old`), `mail_attachments` (Mail.app Mail Downloads), `node_modules` (orphan/old in Projects, Developer, etc.). Use `categories` to list all.
 
-- **Terminal UI:** The CLI uses [Rich](https://github.com/Textualize/rich) for colored output, tables, rules, and panels (similar to the TypeScript version). Install with `pip install -e .` (or `pip install rich`).
+- Terminal UI: The CLI uses [Rich](https://github.com/Textualize/rich) for colored output, tables, rules, and panels. Interactive mode (`make interactive`) uses [Questionary](https://github.com/tmbo/questionary) for a checkbox TUI: **space** to toggle categories, **enter** to confirm, then **y/n** to proceed with cleaning. Install with `pip install -e .`.
 
 Contributing
 
-Feel free to open issues or PRs to add more targets or improves.
+Feel free to open issues or pull requests to add new targets or suggest improvements.
+
+1- Fork the repository
+2- Create your feature branch (git checkout -b feature/yor-feature)
+3- Follow de PR template
+4- Open a Pull Request
