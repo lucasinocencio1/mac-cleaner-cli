@@ -1,4 +1,4 @@
-"""Core constants and targets for mac-cleaner-cli."""
+"""Core constants, targets, and config for mac-cleaner-cli."""
 
 from .constants import (
     HOME,
@@ -13,6 +13,7 @@ from .constants import (
     DOCKER_PATHS,
 )
 from .targets import TARGETS, DANGEROUS_KEYS, RISKY_KEYS
+from . import config
 
 __all__ = [
     "HOME",
@@ -28,4 +29,5 @@ __all__ = [
     "TARGETS",
     "DANGEROUS_KEYS",
     "RISKY_KEYS",
+    "config",
 ]

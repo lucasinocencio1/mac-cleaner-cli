@@ -1,7 +1,7 @@
-"""Tests for src.config."""
+"""Tests for src.core.config."""
 import unittest
 
-from src import config as config_module
+from src.core import config as config_module
 
 
 class TestConfig(unittest.TestCase):

@@ -1,7 +1,7 @@
-"""Tests for src.memory."""
+"""Tests for src.utils.memory."""
 import unittest
 
-from src.memory import approximate_free_bytes, vm_stat_summary
+from src.utils.memory import approximate_free_bytes, vm_stat_summary
 
 
 class TestMemory(unittest.TestCase):
