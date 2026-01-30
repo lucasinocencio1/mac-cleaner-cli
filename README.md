@@ -2,6 +2,62 @@ mac-cleaner-cli
 
 An open-source CLI to inspect and clean macOS System Data.
 
+See it working
+
+Run a scan, then interactive mode to choose what to clean:
+
+```bash
+mac-sysclean --scan
+# or
+make interactive
+```
+
+Typical flow:
+
+1. **Scan** — Shows categories with approximate size and item count (e.g. `2.1 GB (45 items)`).
+2. **Select** — Checkbox TUI: Space to toggle categories, Enter to confirm. Option “✓ Select all” to select everything.
+3. **Confirm** — Prompt `Proceed with cleanup? [y/N]:`; answer [Y] to run the cleanup or [N] to cancel
+4. **Clean** — Each selected category is cleaned in turn; you see `✓ Done.` per category and a final summary.
+
+Example (simplified terminal output):
+
+```
+────────────────────────────── 🧹 Mac Cleaner CLI ──────────────────────────────
+
+Scan results (sizes are approximate):
+
+  Approximate free memory (incl. inactive/speculative): 1.1G
+  Category                                                                Size
+  Local Time Machine snapshots                                   0 snapshot(s)
+  Xcode DerivedData                                            1.4G (11 items)
+  User caches (~/Library/Caches)                             560.8M (31 items)
+  Browser cache (Chrome, Safari, Firefox, Arc)                            0.0B
+  User Trash (~/.Trash)                                        2.1G (45 items)
+  ...
+
+  Total (approx.): 2.0G that can be cleaned
+
+? Select categories to clean: SPACE to toggle, ENTER to confirm. Select at least one.
+  ◯ User caches (~/Library/Caches) — 560.8M (31 items)
+  ◯ User Trash (~/.Trash) — 2.1 GB (45 items)
+  ◯ ✓ Select all
+
+Summary:
+  Items to delete: 76
+  Space to free: 2.7 GB
+
+You selected:
+  • User caches (~/Library/Caches)
+  • Ollama models (~/.ollama/models)
+
+Proceed with cleanup? [y/N]: y
+
+──────────────────────────────── Cleaning ────────────────────────────────
+  User caches (~/Library/Caches)
+  ✓ Done.
+──────────────────────────────── ✓ Done. ─────────────────────────────────
+```
+
 Makefile (shortcuts)
 
 From the project root, `make` or `make help` lists all commands. Examples:

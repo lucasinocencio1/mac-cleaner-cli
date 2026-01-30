@@ -753,6 +753,12 @@ def main(argv=None):
 
     if selected:
         console.print()
+        total_items = sum(c for k in selected for c in (_count_of_target(k),) if c is not None)
+        total_bytes = sum(_bytes_of_target(k) for k in selected)
+        console.print("[bold]Summary:[/]") # here we add the summary of the total items and space to free
+        console.print(f"  Items to delete: {total_items}")
+        console.print(f"  Space to free: {human_size(total_bytes)}")
+        console.print()
         console.print("[bold]You selected:[/]")
         for k in selected:
             note = ""
