@@ -19,149 +19,21 @@ from rich.panel import Panel
 from .memory import approximate_free_bytes
 from . import maintenance
 from . import config as config_module
+from .core.constants import (
+    HOME,
+    DOWNLOADS_DIR,
+    MAIL_DOWNLOADS,
+    NODE_MODULES_SEARCH,
+    NODE_MODULES_DAYS_OLD,
+    NODE_MODULES_MAX_DEPTH,
+    BROWSER_CACHE_PATHS,
+    BREW_PATHS,
+    BREW_CACHE_PREFIXES,
+    DOCKER_PATHS,
+)
+from .core.targets import TARGETS, DANGEROUS_KEYS, RISKY_KEYS
 
 console = Console()
-
-HOME = str(pathlib.Path.home())
-
-DOWNLOADS_DIR = f"{HOME}/Downloads"
-MAIL_DOWNLOADS = f"{HOME}/Library/Containers/com.apple.mail/Data/Library/Mail Downloads"
-NODE_MODULES_SEARCH = [f"{HOME}/Projects", f"{HOME}/Developer", f"{HOME}/Code", f"{HOME}/dev", f"{HOME}/workspace", f"{HOME}/repos"]
-NODE_MODULES_DAYS_OLD = 30
-NODE_MODULES_MAX_DEPTH = 4
-
-# Browser cache paths (Chrome, Safari, Firefox, Arc)
-BROWSER_CACHE_PATHS = [
-    (f"{HOME}/Library/Caches/Google/Chrome", "Chrome"),
-    (f"{HOME}/Library/Caches/com.apple.Safari", "Safari"),
-    (f"{HOME}/Library/Caches/Firefox", "Firefox"),
-    (f"{HOME}/Library/Caches/company.thebrowser.Browser", "Arc"),
-]
-
-TARGETS = {
-    # label: dict(paths/handlers)
-    "time_machine_snapshots": {
-        "type": "special",  # handled by tmutil
-        "desc": "Local Time Machine snapshots",
-    },
-    "ios_backups": {
-        "type": "paths",
-        "desc": "iOS/iPadOS device backups",
-        "paths": [f"{HOME}/Library/Application Support/MobileSync/Backup"],
-        "sudo": False,
-        "safe_globs": ["*"],  # delete children, not parent
-    },
-    "xcode_derived": {
-        "type": "paths",
-        "desc": "Xcode DerivedData",
-        "paths": [f"{HOME}/Library/Developer/Xcode/DerivedData"],
-        "sudo": False,
-        "safe_globs": ["*"],
-    },
-    "xcode_archives": {
-        "type": "paths",
-        "desc": "Xcode Archives",
-        "paths": [f"{HOME}/Library/Developer/Xcode/Archives"],
-        "sudo": False,
-        "safe_globs": ["*"],
-    },
-    "system_caches": {
-        "type": "paths",
-        "desc": "System caches (/Library/Caches)",
-        "paths": ["/Library/Caches"],
-        "sudo": True,
-        "safe_globs": ["*"],
-    },
-    "user_caches": {
-        "type": "paths",
-        "desc": "User caches (~/Library/Caches)",
-        "paths": [f"{HOME}/Library/Caches"],
-        "sudo": False,
-        "safe_globs": ["*"],
-    },
-    "browser_cache": {
-        "type": "paths",
-        "desc": "Browser cache (Chrome, Safari, Firefox, Arc)",
-        "paths": [p[0] for p in BROWSER_CACHE_PATHS],
-        "sudo": False,
-        "safe_globs": ["*"],
-    },
-    "homebrew": {
-        "type": "special",
-        "desc": "Homebrew cache (brew cleanup --prune=all)",
-    },
-    "system_logs": {
-        "type": "paths",
-        "desc": "System logs (/private/var/log)",
-        "paths": ["/private/var/log"],
-        "sudo": True,
-        "safe_globs": ["*"],
-    },
-    "user_logs": {
-        "type": "paths",
-        "desc": "User logs (~/Library/Logs)",
-        "paths": [f"{HOME}/Library/Logs"],
-        "sudo": False,
-        "safe_globs": ["*"],
-    },
-    "private_tmp": {
-        "type": "paths",
-        "desc": "System temp (/private/tmp and /private/var/tmp)",
-        "paths": ["/private/tmp", "/private/var/tmp"],
-        "sudo": True,
-        "safe_globs": ["*"],
-    },
-    "ollama_models": {
-        "type": "paths",
-        "desc": "Ollama models (~/.ollama/models)",
-        "paths": [f"{HOME}/.ollama/models"],
-        "sudo": False,
-        "safe_globs": ["blobs/*", "manifests/*"],  # keep folder structure, delete contents
-    },
-    "docker_data": {
-        "type": "paths",
-        "desc": "Docker data (~/Library/Containers/com.docker.docker / ~/Docker.raw)",
-        "paths": [
-            f"{HOME}/Library/Containers/com.docker.docker",
-            f"{HOME}/Library/Group Containers/group.com.docker",
-            f"{HOME}/Docker.raw"  # older Docker Desktop stores disk image here
-        ],
-        "sudo": False,
-        "safe_globs": [],  # whole path may be large; we won't auto-delete w/o explicit confirm
-    },
-    "docker_prune": {
-        "type": "special",
-        "desc": "Docker reclaimable (docker system prune -af, no volumes)",
-    },
-    "trash": {
-        "type": "paths",
-        "desc": "User Trash (~/.Trash)",
-        "paths": [f"{HOME}/.Trash"],
-        "sudo": False,
-        "safe_globs": ["*"],
-    },
-    "downloads": {
-        "type": "special",
-        "desc": "Old Downloads (~/Downloads, older than N days)",
-    },
-    "mail_attachments": {
-        "type": "paths",
-        "desc": "Mail.app attachments (Mail Downloads)",
-        "paths": [MAIL_DOWNLOADS],
-        "sudo": False,
-        "safe_globs": ["*"],
-    },
-    "node_modules": {
-        "type": "special",
-        "desc": "Orphan/old node_modules (Projects, Developer, etc.)",
-    },
-}
-
-# Targets that require explicit --force to delete
-DANGEROUS_KEYS = {"docker_data", "system_caches", "private_tmp"}
-
-# Risky targets: hidden in scan/interactive/clean unless --risky
-RISKY_KEYS = DANGEROUS_KEYS | {"ios_backups"}
 
 def human_size(num):
     for unit in ["B", "KB", "MB", "GB", "TB"]:
@@ -264,13 +136,6 @@ def run(cmd, need_sudo=False):
         cmd = f"sudo {cmd}"
     return subprocess.run(cmd, shell=True)
 
-BREW_PATHS = ["/opt/homebrew/bin/brew", "/usr/local/bin/brew"]
-BREW_CACHE_PREFIXES = [
-    f"{HOME}/Library/Caches/Homebrew",
-    "/opt/homebrew/Caches",
-    "/usr/local/Caches",
-]
-
 def _find_brew():
     for p in BREW_PATHS:
         if os.path.isfile(p) and os.access(p, os.X_OK):
@@ -291,12 +156,6 @@ def _brew_cache_path():
         if path == prefix or path.startswith(prefix + os.sep):
             return path
     return None
-
-DOCKER_PATHS = [
-    "/usr/local/bin/docker",
-    "/opt/homebrew/bin/docker",
-    "/Applications/Docker.app/Contents/Resources/bin/docker",
-]
 
 def _find_docker():
     for p in DOCKER_PATHS:
