@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line interface for mac_cleaner_cli package."""
+"""Command-line interface for mac-cleaner-cli (src package)."""
 import json
 import os
 import re

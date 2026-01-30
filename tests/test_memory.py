@@ -1,7 +1,7 @@
-"""Tests for mac_cleaner_cli.memory."""
+"""Tests for src.memory."""
 import unittest
 
-from mac_cleaner_cli.memory import approximate_free_bytes, vm_stat_summary
+from src.memory import approximate_free_bytes, vm_stat_summary
 
 
 class TestMemory(unittest.TestCase):

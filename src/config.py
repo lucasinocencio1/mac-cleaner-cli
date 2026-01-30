@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Configuration for mac_cleaner_cli."""
+"""Configuration for mac-cleaner-cli (src package)."""
 from __future__ import annotations
 
 import json

@@ -2,7 +2,7 @@
 # Usage: make [target]. List commands: make help
 
 PYTHON  ?= python3
-CLI     := $(PYTHON) -m mac_cleaner_cli.cli
+CLI     := $(PYTHON) -m src.cli
 
 .PHONY: help install test scan interactive categories maintenance-dns maintenance-purge config-init config-show clean-dry
 

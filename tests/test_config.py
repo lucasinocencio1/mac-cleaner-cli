@@ -1,7 +1,7 @@
-"""Tests for mac_cleaner_cli.config."""
+"""Tests for src.config."""
 import unittest
 
-from mac_cleaner_cli import config as config_module
+from src import config as config_module
 
 
 class TestConfig(unittest.TestCase):

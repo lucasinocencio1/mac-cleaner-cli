@@ -1,1 +1,1 @@
-# Tests for mac_cleaner_cli
+# Tests for src (mac-cleaner-cli)

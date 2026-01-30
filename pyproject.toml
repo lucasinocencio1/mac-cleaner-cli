@@ -14,4 +14,4 @@ requires-python = ">=3.8"
 dependencies = ["rich>=13.0.0", "questionary>=2.0.0"]
 
 [project.scripts]
-mac-sysclean = "mac_cleaner_cli.cli:main"
+mac-sysclean = "src.cli:main"
