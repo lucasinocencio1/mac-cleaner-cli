@@ -12,6 +12,7 @@ import pathlib
 import shutil
 from typing import Tuple
 from rich.console import Console
+from rich.markup import escape
 from rich.table import Table
 from rich.rule import Rule
 from rich.panel import Panel
@@ -185,6 +186,38 @@ def du_path(path):
     except Exception:
         return 0
 
+def count_path(path):
+    """Count top-level items (files + dirs) in path. Returns 0 if unreadable."""
+    try:
+        if not os.path.exists(path):
+            return 0
+        if os.path.isfile(path):
+            return 1
+        return len(os.listdir(path))
+    except OSError:
+        return 0
+
+def _count_of_target(key):
+    """Return number of items for target (top-level per path, or special logic). None if not applicable."""
+    t = TARGETS[key]
+    if t["type"] == "special":
+        if key == "time_machine_snapshots":
+            return len(list_tm_snaps())
+        if key == "homebrew":
+            cache = _brew_cache_path()
+            return count_path(cache) if cache and os.path.exists(cache) else None
+        if key == "docker_prune":
+            return None
+        if key == "downloads":
+            return len(_downloads_old_items())
+        if key == "node_modules":
+            return len(_node_modules_orphans())
+        return None
+    total = 0
+    for p in t["paths"]:
+        total += count_path(p)
+    return total if total else None
+
 def _bytes_of_target(key):
     """Return approximate size in bytes for a target. TM snapshots → 0 (unknown)."""
     t = TARGETS[key]
@@ -215,6 +248,16 @@ def size_of_target(key):
             return f"{len(snaps)} snapshot(s)"
         return human_size(_bytes_of_target(key))
     return human_size(_bytes_of_target(key))
+
+def format_target_size(key):
+    """Size string with optional item count, e.g. '2.1 GB (45 items)'."""
+    size_str = size_of_target(key)
+    if key == "time_machine_snapshots":
+        return size_str  # already "N snapshot(s)"
+    count = _count_of_target(key)
+    if count is not None and count > 0:
+        return f"{size_str} ({count} items)"
+    return size_str
 
 def run(cmd, need_sudo=False):
     if need_sudo and os.geteuid() != 0:
@@ -519,7 +562,7 @@ def print_scan(include_risky: bool = True):
     table.add_column("Size", justify="right", style="yellow")
     for key in keys:
         t = TARGETS[key]
-        size = size_of_target(key)
+        size = format_target_size(key)
         table.add_row(t["desc"], size)
     console.print(table)
     total_bytes = sum(_bytes_of_target(k) for k in keys)
@@ -538,7 +581,7 @@ def _prompt_choices_tui(keys: list):
         from questionary import Choice
     except ImportError:
         return None
-    choices = [Choice(f"{TARGETS[k]['desc']} — {size_of_target(k)}", value=k) for k in keys]
+    choices = [Choice(f"{TARGETS[k]['desc']} — {format_target_size(k)}", value=k) for k in keys]
     choices.append(Choice("✓ Select all", value="__all__"))
     msg = "Select categories to clean: SPACE to toggle, ENTER to confirm. Select at least one."
     while True:
@@ -583,7 +626,8 @@ def prompt_choices(include_risky: bool = True):
     return idxs
 
 def confirm(prompt):
-    ans = console.input(f"[cyan]{prompt} [y/N]: [/]").strip().lower()
+    # Escape [y/N] so Rich doesn't treat it as markup (style tag)
+    ans = console.input(f"[cyan]{prompt} {escape('[y/N]')}: [/]").strip().lower()
     return ans == "y"
 
 
@@ -722,7 +766,7 @@ def main(argv=None):
             console.print("[dim]Rerun with --force if you really intend to delete them.[/]")
             sys.exit(1)
 
-        if not confirm("\nProceed with cleanup? [y/N]"):
+        if not confirm("\nProceed with cleanup?"):
             console.print("[yellow]Cancelled.[/]")
             sys.exit(0)
         perform_cleanup(selected, dry_run=args.dry_run)
