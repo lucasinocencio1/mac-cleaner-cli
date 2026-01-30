@@ -26,19 +26,19 @@ Example (simplified terminal output):
 
 Scan results (sizes are approximate):
 
-  Approximate free memory (incl. inactive/speculative): 1.1G
+  Approximate free memory (incl. inactive/speculative): 1.1 GB
   Category                                                                Size
   Local Time Machine snapshots                                   0 snapshot(s)
-  Xcode DerivedData                                            1.4G (11 items)
-  User caches (~/Library/Caches)                             560.8M (31 items)
-  Browser cache (Chrome, Safari, Firefox, Arc)                            0.0B
-  User Trash (~/.Trash)                                        2.1G (45 items)
+  Xcode DerivedData                                            1.4 GB (11 items)
+  User caches (~/Library/Caches)                             560.8 MB (31 items)
+  Browser cache (Chrome, Safari, Firefox, Arc)                            0.0 B
+  User Trash (~/.Trash)                                        2.1 GB (45 items)
   ...
 
-  Total (approx.): 2.0G that can be cleaned
+  Total (approx.): 2.0 GB that can be cleaned
 
 ? Select categories to clean: SPACE to toggle, ENTER to confirm. Select at least one.
-  ◯ User caches (~/Library/Caches) — 560.8M (31 items)
+  ◯ User caches (~/Library/Caches) — 560.8 MB (31 items)
   ◯ User Trash (~/.Trash) — 2.1 GB (45 items)
   ◯ ✓ Select all
 

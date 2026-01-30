@@ -101,7 +101,7 @@ TARGETS = {
 DANGEROUS_KEYS = {"docker_data", "system_caches", "private_tmp"}
 
 def human_size(num):
-    for unit in ["B", "K", "M", "G", "T"]:
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
         if abs(num) < 1024.0:
             return f"{num:3.1f}{unit}"
         num /= 1024.0

@@ -164,11 +164,11 @@ DANGEROUS_KEYS = {"docker_data", "system_caches", "private_tmp"}
 RISKY_KEYS = DANGEROUS_KEYS | {"ios_backups"}
 
 def human_size(num):
-    for unit in ["B", "K", "M", "G", "T"]:
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
         if abs(num) < 1024.0:
-            return f"{num:3.1f}{unit}"
+            return f"{num:3.1f} {unit}" # here we add the space between the number and the unit
         num /= 1024.0
-    return f"{num:.1f}P"
+    return f"{num:.1f} PB"
 
 def du_path(path):
     total = 0
